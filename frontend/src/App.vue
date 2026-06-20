@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import FEACanvas from './components/FEACanvas.vue';
 import ElementInfo from './components/ElementInfo.vue';
 import MeshControls from './components/MeshControls.vue';
+import ReportModal from './components/ReportModal.vue';
 import { useFEAStore } from './store/fea';
 
 const store = useFEAStore();
+const showReportModal = ref(false);
 
 onMounted(() => {
   store.loadPreset('cantilever');
@@ -19,9 +21,18 @@ onMounted(() => {
       <h1 class="text-lg font-bold text-purple-400">
         🔬 有限元应力热力图可视化
       </h1>
-      <div class="text-xs text-slate-500">
-        节点: {{ store.model.nodes.length }} |
-        单元: {{ store.model.elements.length }}
+      <div class="flex items-center gap-4">
+        <div class="text-xs text-slate-500">
+          节点: {{ store.model.nodes.length }} |
+          单元: {{ store.model.elements.length }}
+        </div>
+        <button
+          @click="showReportModal = true"
+          class="px-4 py-1.5 text-xs font-bold bg-gradient-to-r from-purple-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white rounded-lg transition shadow-lg shadow-purple-900/30 flex items-center gap-1.5"
+        >
+          <span>📊</span>
+          导出分析报告
+        </button>
       </div>
     </header>
 
@@ -63,5 +74,8 @@ onMounted(() => {
         热力图: {{ store.heatmapMode }}
       </span>
     </footer>
+
+    <!-- Report Modal -->
+    <ReportModal v-model:visible="showReportModal" />
   </div>
 </template>
